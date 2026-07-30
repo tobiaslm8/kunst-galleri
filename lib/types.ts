@@ -14,4 +14,5 @@ export type ArtworkImage = {
   title: string;
   artistName: string;
   artistSlug: string;
+  fileName: string;
 };

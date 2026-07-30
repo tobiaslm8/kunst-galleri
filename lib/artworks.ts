@@ -12,12 +12,17 @@ function publicPathFor(slug: string, fileName: string): string {
 
 function titleFromFileName(fileName: string): string {
   const baseName = fileName.replace(/\.[^/.]+$/, "");
-
-  return baseName
+  const normalized = baseName
+    .replace(/^\d+[\s_-]*/, "")
     .replace(/[-_]+/g, " ")
     .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+    .trim();
+
+  if (!normalized) {
+    return "Uden titel";
+  }
+
+  return normalized.charAt(0).toLocaleUpperCase("da-DK") + normalized.slice(1);
 }
 
 export async function getArtworkImages(
@@ -42,16 +47,19 @@ export async function getArtworkImages(
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
     .filter((fileName) => imageExtensions.has(path.extname(fileName).toLowerCase()))
-    .sort((a, b) => a.localeCompare(b, "da", { numeric: true, sensitivity: "base" }))
+    .sort((first, second) =>
+      first.localeCompare(second, "da", { numeric: true, sensitivity: "base" })
+    )
     .map((fileName) => {
       const title = titleFromFileName(fileName);
 
       return {
         src: publicPathFor(slug, fileName),
-        alt: `${title} af ${artistName}`,
+        alt: `${title}, værk af ${artistName}`,
         title,
         artistName,
-        artistSlug: slug
+        artistSlug: slug,
+        fileName
       };
     });
 }

@@ -1,139 +1,101 @@
-# Atelier Galleri
+# Atelier Galleri - version 2
 
-Professionel, moderne og responsiv Next.js-hjemmeside til at praesentere kunst fra 3 kunstnere.
+En professionel, responsiv og statisk Next.js-hjemmeside til at praesentere kunst fra tre kunstnere.
+Version 2 er lavet specifikt til en enkel deployment paa Cloudflare Pages.
 
-Projektet indeholder:
+## Det vigtigste i version 2
 
-- Forside med hero-sektion, kunstnerkort og udvalgte vaerker
-- Individuel side for hver kunstner
-- Dynamisk galleri, der scanner billeder i `public/artists/[slug]/artworks`
-- Masonry-lignende billedgrid med CSS columns
-- Lightbox/modal med tastaturstyring: Escape, pil venstre og pil hoejre
-- Lazy loading af billeder via browserens `loading="lazy"`
-- SEO metadata, sitemap og robots
-- Tailwind CSS 4 setup via `@import "tailwindcss"`
+- Next.js 16.2.12 og React 19.2.8 er laast til konkrete versioner.
+- TypeScript er laast til 6.0.2, saa npm ikke automatisk henter TypeScript 7.
+- Siden bruger statisk eksport og bygger alle filer til mappen `out`.
+- Ingen database og ingen Node.js-server er noedvendig efter build.
+- Gallerierne scanner automatisk kunstnernes billedmapper ved build.
+- Responsivt masonry-layout og lightbox med tastaturstyring.
+- Grundlaeggende SEO, sitemap, robots, Open Graph og strukturerede data.
+- Ingen eksterne skrifttyper eller tredjeparts scripts.
+- Ingen Tailwind-afhaengighed; designet ligger i almindelig CSS og er nemmere at holde stabilt.
 
-## Installation
+## Lokal installation
 
-```bash
+Brug Node.js 22, og koer derefter:
+
+```powershell
 npm install
 npm run dev
 ```
 
-Aabn derefter:
+Aabn:
 
-```bash
+```text
 http://localhost:3000
 ```
 
-## Produktion
+## Test produktionsversionen
 
-```bash
+```powershell
 npm run build
-npm run start
 ```
 
-## Filstruktur
+Et vellykket build opretter mappen:
 
 ```text
-app/
-  layout.tsx
-  page.tsx
-  globals.css
-  sitemap.ts
-  robots.ts
-  artists/
-    [slug]/
-      page.tsx
-components/
-  artist-card.tsx
-  artwork-gallery.tsx
-  section-heading.tsx
-  site-footer.tsx
-  site-header.tsx
-lib/
-  artists.ts
-  artworks.ts
-  types.ts
-public/
-  artists/
-    kunstner-1/
-      portrait.jpg
-      artworks/
-        billede-1.jpg
-        billede-2.jpg
-    kunstner-2/
-      portrait.jpg
-      artworks/
-        billede-1.jpg
-    kunstner-3/
-      portrait.jpg
-      artworks/
-        billede-1.jpg
+out
 ```
 
-## Saadan opdaterer du kunstnere
+Det er indholdet i `out`, Cloudflare Pages udgiver.
 
-Rediger `lib/artists.ts`.
+## Hvor aendres kunstnerne?
 
-Her kan du aendre:
-
-- navn
-- slug
-- kort beskrivelse
-- intro-tekst
-- SEO-beskrivelse
-- sti til portraetbillede
-
-Slug skal passe med mappenavnet i `public/artists`.
-
-Eksempel:
-
-```ts
-{
-  name: "Anna Eksempel",
-  slug: "anna-eksempel",
-  portraitSrc: "/artists/anna-eksempel/portrait.jpg"
-}
-```
-
-Du skal saa oprette denne mappe:
+Rediger:
 
 ```text
-public/artists/anna-eksempel/
-  portrait.jpg
-  artworks/
-    billede-1.jpg
-    billede-2.jpg
+lib/artists.ts
 ```
 
-## Saadan tilfoejer du nye billeder
+Her aendres navn, kunstnerisk beskrivelse, intro, SEO-tekst og portraetsti.
 
-Laeg billeder i kunstnerens `artworks`-mappe:
+## Hvor laegges billederne?
 
 ```text
+public/artists/kunstner-1/portrait.jpg
 public/artists/kunstner-1/artworks/
+
+public/artists/kunstner-2/portrait.jpg
+public/artists/kunstner-2/artworks/
+
+public/artists/kunstner-3/portrait.jpg
+public/artists/kunstner-3/artworks/
 ```
 
-Understoettede formater:
+Filnavne bruges automatisk som titler. Eksempel:
 
-- `.jpg`
-- `.jpeg`
-- `.png`
-- `.webp`
-- `.avif`
-- `.gif`
-
-Galleriet sorterer filerne naturligt, saa `billede-2.jpg` kommer foer `billede-10.jpg`.
-
-Ved lokal udvikling kan du typisk bare genindlaese siden. Ved statisk deployment skal siden bygges og deployes igen, naar du tilfoejer eller fjerner filer i `public`.
-
-## Miljoevariabel til sitemap
-
-Saet denne i produktion:
-
-```bash
-NEXT_PUBLIC_SITE_URL=https://ditdomane.dk
+```text
+01-stille-landskab.jpg
 ```
 
-Hvis den ikke er sat, bruger projektet `http://localhost:3000` i sitemap og robots.
+vises som:
+
+```text
+Stille landskab
+```
+
+## Kontakt og hjemmesidens navn
+
+Rediger:
+
+```text
+lib/site.ts
+```
+
+Her aendres gallerinavn, e-mail og Instagram-link.
+
+## Vigtig SEO-indstilling
+
+Lokalt bruger siden `http://localhost:3000`. Paa Cloudflare boer du tilfoeje denne build-variabel:
+
+```text
+NEXT_PUBLIC_SITE_URL=https://din-adresse.dk
+```
+
+Du kan foerst bruge den endelige `pages.dev`-adresse, naar Cloudflare har oprettet projektet.
+Se `CLOUDFLARE.md`.

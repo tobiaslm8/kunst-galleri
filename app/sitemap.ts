@@ -1,17 +1,22 @@
 import type { MetadataRoute } from "next";
 import { artists } from "@/lib/artists";
+import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const lastModified = new Date();
 
   return [
     {
-      url: baseUrl,
-      lastModified: new Date()
+      url: `${siteConfig.url}/`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 1
     },
     ...artists.map((artist) => ({
-      url: `${baseUrl}/artists/${artist.slug}`,
-      lastModified: new Date()
+      url: `${siteConfig.url}/artists/${artist.slug}/`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.8
     }))
   ];
 }

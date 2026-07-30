@@ -1,34 +1,45 @@
+import Link from "next/link";
+import { artists } from "@/lib/artists";
+import { siteConfig } from "@/lib/site";
+
 export function SiteFooter() {
   return (
-    <footer className="border-t border-stone-200 bg-stone-950 text-stone-100">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
-        <div>
-          <p className="font-serif text-3xl tracking-[-0.03em]">Atelier Galleri</p>
-          <p className="mt-4 max-w-xl text-sm leading-7 text-stone-300">
-            En rolig digital ramme om tre kunstneres malerier, processer og visuelle universer.
-            Udskift nemt kunstnere, tekster og billeder i projektets datafil og billedmapper.
+    <footer className="siteFooter">
+      <div className="container footerGrid">
+        <div className="footerIntro">
+          <p className="eyebrow">{siteConfig.name}</p>
+          <h2>Kunst fortjener plads, ro og et nærværende blik.</h2>
+          <p>
+            Kontaktoplysningerne er placeholders og kan nemt ændres i filen
+            <code> lib/site.ts</code>.
           </p>
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-400">Kontakt</p>
-          <div className="mt-4 space-y-2 text-sm text-stone-300">
-            <p>kontakt@galleri.dk</p>
-            <p>+45 12 34 56 78</p>
-          </div>
+          <p className="footerTitle">Kunstnere</p>
+          <nav className="footerLinks" aria-label="Kunstnere">
+            {artists.map((artist) => (
+              <Link key={artist.slug} href={`/artists/${artist.slug}`}>
+                {artist.name}
+              </Link>
+            ))}
+          </nav>
         </div>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-400">Sociale medier</p>
-          <div className="mt-4 space-y-2 text-sm text-stone-300">
-            <p>Instagram</p>
-            <p>Facebook</p>
+          <p className="footerTitle">Kontakt</p>
+          <div className="footerLinks">
+            <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+            <a href={siteConfig.instagramUrl} target="_blank" rel="noreferrer">
+              {siteConfig.instagramLabel}
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-white/10 px-5 py-5 text-center text-xs text-stone-500 sm:px-8">
-        &copy; {new Date().getFullYear()} Atelier Galleri. Alle rettigheder forbeholdes.
+      <div className="container footerBottom">
+        <span>&copy; {new Date().getFullYear()} {siteConfig.name}</span>
+        <span>Bygget som statisk Next.js-side til Cloudflare Pages</span>
       </div>
     </footer>
   );

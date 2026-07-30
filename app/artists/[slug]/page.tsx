@@ -5,6 +5,7 @@ import { ArtworkGallery } from "@/components/artwork-gallery";
 import { SectionHeading } from "@/components/section-heading";
 import { artists, getArtistBySlug } from "@/lib/artists";
 import { getArtworkImages } from "@/lib/artworks";
+import { siteConfig } from "@/lib/site";
 
 type ArtistPageProps = {
   params: Promise<{
@@ -31,10 +32,19 @@ export async function generateMetadata({ params }: ArtistPageProps): Promise<Met
   return {
     title: artist.name,
     description: artist.metaDescription,
+    alternates: {
+      canonical: `/artists/${artist.slug}/`
+    },
     openGraph: {
-      title: `${artist.name} | Atelier Galleri`,
+      title: `${artist.name} | ${siteConfig.name}`,
       description: artist.metaDescription,
-      images: [artist.portraitSrc]
+      type: "profile",
+      images: [
+        {
+          url: artist.portraitSrc,
+          alt: `Portræt af ${artist.name}`
+        }
+      ]
     }
   };
 }
@@ -48,33 +58,44 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
   }
 
   const artworks = await getArtworkImages(artist.slug, artist.name);
+  const artistIndex = artists.findIndex((item) => item.slug === artist.slug);
+  const previousArtist = artists[(artistIndex - 1 + artists.length) % artists.length];
+  const nextArtist = artists[(artistIndex + 1) % artists.length];
+
+  const artistJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: artist.name,
+    description: artist.metaDescription,
+    image: `${siteConfig.url}${artist.portraitSrc}`,
+    url: `${siteConfig.url}/artists/${artist.slug}/`
+  };
 
   return (
     <>
-      <section className="border-b border-stone-200 bg-[#f6f0e8]">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:py-24">
-          <div className="overflow-hidden rounded-[2.5rem] bg-white shadow-2xl shadow-stone-300/60">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(artistJsonLd) }}
+      />
+
+      <section className="artistHero">
+        <div className="container artistHeroGrid">
+          <figure className="artistHeroPortrait">
             <img
               src={artist.portraitSrc}
-              alt={`Portr\u00e6t af ${artist.name}`}
+              alt={`Portræt af ${artist.name}`}
               loading="eager"
               decoding="async"
-              className="aspect-[4/5] h-full w-full object-cover"
             />
-          </div>
+          </figure>
 
-          <div>
-            <Link
-              href="/"
-              className="mb-8 inline-flex rounded-full border border-stone-300 bg-white/60 px-4 py-2 text-sm text-stone-700 transition hover:bg-white hover:text-stone-950 focus:outline-none focus:ring-2 focus:ring-stone-950/20"
-            >
-              &larr; Tilbage til forsiden
+          <div className="artistHeroCopy">
+            <Link className="backLink" href="/">
+              <span aria-hidden="true">&larr;</span> Tilbage til forsiden
             </Link>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-stone-500">{artist.role}</p>
-            <h1 className="mt-5 font-serif text-6xl tracking-[-0.06em] text-stone-950 sm:text-7xl lg:text-8xl">
-              {artist.name}
-            </h1>
-            <div className="mt-8 grid gap-5 text-base leading-8 text-stone-700 sm:text-lg">
+            <p className="eyebrow">{artist.role}</p>
+            <h1>{artist.name}</h1>
+            <div className="artistIntro">
               {artist.intro.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -83,23 +104,35 @@ export default async function ArtistPage({ params }: ArtistPageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
-        <div className="mb-12 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionHeading
-            eyebrow="Galleri"
-            title={`V\u00e6rker af ${artist.name}`}
-            description="Galleriet l&aelig;ser automatisk alle billedfiler i kunstnerens artworks-mappe og tilpasser layoutet efter antallet af billeder."
-          />
-          <div className="rounded-full border border-stone-200 bg-white px-5 py-3 text-sm text-stone-600 shadow-sm">
-            {artworks.length} {artworks.length === 1 ? "billede" : "billeder"}
+      <section className="section artistGallerySection">
+        <div className="container">
+          <div className="sectionTopline sectionTopline--gallery">
+            <SectionHeading
+              eyebrow="Galleri"
+              title={`Værker af ${artist.name}`}
+              description="Klik på et billede for at se det i stor visning. Galleriet opdateres automatisk, når billeder tilføjes eller fjernes fra kunstnerens mappe og siden bygges igen."
+            />
+            <p className="artworkCount">
+              {artworks.length} {artworks.length === 1 ? "værk" : "værker"}
+            </p>
           </div>
-        </div>
 
-        <ArtworkGallery
-          artworks={artworks}
-          emptyHint={`Tilf\u00f8j billeder i public/artists/${artist.slug}/artworks for at fylde galleriet.`}
-        />
+          <ArtworkGallery artworks={artworks} priorityCount={2} />
+        </div>
       </section>
+
+      <nav className="artistPager" aria-label="Skift mellem kunstnere">
+        <div className="container artistPagerGrid">
+          <Link href={`/artists/${previousArtist.slug}`}>
+            <small>Forrige kunstner</small>
+            <strong><span aria-hidden="true">&larr;</span> {previousArtist.name}</strong>
+          </Link>
+          <Link href={`/artists/${nextArtist.slug}`}>
+            <small>Næste kunstner</small>
+            <strong>{nextArtist.name} <span aria-hidden="true">&rarr;</span></strong>
+          </Link>
+        </div>
+      </nav>
     </>
   );
 }

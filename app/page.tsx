@@ -4,106 +4,131 @@ import { ArtworkGallery } from "@/components/artwork-gallery";
 import { SectionHeading } from "@/components/section-heading";
 import { artists } from "@/lib/artists";
 import { getFeaturedArtworks } from "@/lib/artworks";
+import { siteConfig } from "@/lib/site";
+
+export const dynamic = "force-static";
 
 export default async function HomePage() {
   const featuredArtworks = await getFeaturedArtworks(2);
   const heroImages = featuredArtworks.slice(0, 3);
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    about: artists.map((artist) => ({
+      "@type": "Person",
+      name: artist.name,
+      url: `${siteConfig.url}/artists/${artist.slug}/`
+    }))
+  };
+
   return (
     <>
-      <section className="relative isolate overflow-hidden border-b border-stone-200 bg-[#f6f0e8]">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(120,113,108,0.18),transparent_35%),linear-gradient(120deg,rgba(255,255,255,0.7),rgba(214,204,190,0.45))]" />
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-28">
-          <div>
-            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.32em] text-stone-600">
-              Skandinavisk gallerioplevelse
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
+
+      <section className="hero">
+        <div className="heroGlow" aria-hidden="true" />
+        <div className="container heroGrid">
+          <div className="heroCopy">
+            <p className="eyebrow">Et digitalt rum for kunst</p>
+            <h1>Kunst med ro, dybde og karakter.</h1>
+            <p className="heroLead">
+              Oplev tre selvstændige kunstneriske universer i et enkelt og sanseligt
+              onlinegalleri, hvor værkerne får lov til at fylde.
             </p>
-            <h1 className="max-w-4xl font-serif text-6xl tracking-[-0.06em] text-stone-950 sm:text-7xl lg:text-8xl">
-              Kunst med ro, dybde og karakter.
-            </h1>
-            <p className="mt-8 max-w-2xl text-lg leading-9 text-stone-700">
-              En professionel digital ramme til at pr&aelig;sentere tre kunstneres malerier,
-              processer og visuelle universer med store billeder, luftig typografi og fokus p&aring;
-              selve v&aelig;rkerne.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Link
-                href="#kunstnere"
-                className="rounded-full bg-stone-950 px-6 py-3 text-sm font-medium text-white transition hover:-translate-y-0.5 hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-950/20"
-              >
-                Udforsk kunstnerne
+            <div className="heroActions">
+              <Link className="button button--dark" href="#kunstnere">
+                Mød kunstnerne
               </Link>
-              <Link
-                href="#udvalgte-vaerker"
-                className="rounded-full border border-stone-300 bg-white/70 px-6 py-3 text-sm font-medium text-stone-950 transition hover:-translate-y-0.5 hover:bg-white focus:outline-none focus:ring-2 focus:ring-stone-950/20"
-              >
-                Se udvalgte v&aelig;rker
+              <Link className="button button--light" href="#udvalgte-vaerker">
+                Se udvalgte værker
               </Link>
+            </div>
+            <div className="heroMeta" aria-label="Om galleriet">
+              <span>03 kunstnere</span>
+              <span>Dynamiske gallerier</span>
+              <span>Mobilvenlig visning</span>
             </div>
           </div>
 
-          <div className="grid min-h-[520px] grid-cols-6 grid-rows-6 gap-4">
+          <div className="heroCollage" aria-label="Udvalgte kunstværker">
             {heroImages.map((artwork, index) => (
-              <div
-                key={artwork.src}
-                className={
-                  index === 0
-                    ? "col-span-4 row-span-4 overflow-hidden rounded-[2rem] bg-white shadow-2xl shadow-stone-300/60"
-                    : index === 1
-                      ? "col-span-2 row-span-3 overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-stone-300/50"
-                      : "col-span-3 row-span-3 col-start-4 overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-stone-300/50"
-                }
-              >
+              <figure key={artwork.src} className={`heroFrame heroFrame--${index + 1}`}>
                 <img
                   src={artwork.src}
                   alt={artwork.alt}
                   loading={index === 0 ? "eager" : "lazy"}
                   decoding="async"
-                  className="h-full w-full object-cover"
                 />
-              </div>
+                <figcaption>{artwork.artistName}</figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="kunstnere" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
-        <div className="mb-12 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
-          <SectionHeading
-            eyebrow="Kunstnere"
-            title="Tre kunstnere. Tre selvst&aelig;ndige billedrum."
-            description="Hver kunstner har sin egen side med portr&aelig;t, introduktion og et automatisk opdateret galleri baseret p&aring; billederne i kunstnerens mappe."
-          />
-          <p className="max-w-sm text-sm leading-7 text-stone-500">
-            Layoutet er bygget til at lade kunsten fylde mest muligt, uanset om der ligger f&aring;
-            eller mange billeder i galleriet.
-          </p>
-        </div>
+      <section id="kunstnere" className="section section--artists">
+        <div className="container">
+          <div className="sectionTopline">
+            <SectionHeading
+              eyebrow="Kunstnere"
+              title="Tre kunstnere. Tre selvstændige billedrum."
+              description="Hver kunstner har sin egen side med portræt, introduktion og et galleri, der automatisk følger antallet af billeder i kunstnerens mappe."
+            />
+            <p className="sectionAside">
+              Et roligt layout med stor luft omkring motiverne giver plads til både detaljer,
+              farver og materialitet.
+            </p>
+          </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {artists.map((artist, index) => (
-            <ArtistCard key={artist.slug} artist={artist} priority={index === 0} />
-          ))}
+          <div className="artistGrid">
+            {artists.map((artist, index) => (
+              <ArtistCard
+                key={artist.slug}
+                artist={artist}
+                index={index}
+                priority={index === 0}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="udvalgte-vaerker" className="border-y border-stone-200 bg-white/60">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
-          <div className="mb-12 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <section id="udvalgte-vaerker" className="section section--gallery">
+        <div className="container">
+          <div className="sectionTopline sectionTopline--gallery">
             <SectionHeading
-              eyebrow="Udvalgte v&aelig;rker"
-              title="Et fleksibelt galleri, der skalerer med indholdet."
-              description="Forsiden viser automatisk de f&oslash;rste udvalgte billeder fra hver kunstners billedmappe. P&aring; de enkelte kunstnersider vises hele mappen."
+              eyebrow="Udvalgte værker"
+              title="Et galleri, der vokser sammen med kunsten."
+              description="Forsiden samler automatisk et udvalg fra alle tre kunstnere. Klik på et værk for at se det i stor visning."
             />
-            <Link
-              href={`/artists/${artists[0].slug}`}
-              className="w-fit rounded-full border border-stone-300 px-6 py-3 text-sm font-medium transition hover:-translate-y-0.5 hover:bg-stone-950 hover:text-white focus:outline-none focus:ring-2 focus:ring-stone-950/20"
-            >
-              G&aring; til f&oslash;rste galleri
+            <Link className="textLink textLink--large" href={`/artists/${artists[0].slug}`}>
+              Gå til første kunstner <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
 
-          <ArtworkGallery artworks={featuredArtworks} showArtistName columns="compact" />
+          <ArtworkGallery
+            artworks={featuredArtworks}
+            showArtistName
+            density="compact"
+            priorityCount={2}
+          />
+        </div>
+      </section>
+
+      <section className="statementSection">
+        <div className="container statementGrid">
+          <p className="eyebrow">Om galleriet</p>
+          <blockquote>
+            Et værk behøver ikke forklare alt. Nogle gange skal det blot have et rum,
+            hvor man kan blive stående lidt længere.
+          </blockquote>
         </div>
       </section>
     </>
