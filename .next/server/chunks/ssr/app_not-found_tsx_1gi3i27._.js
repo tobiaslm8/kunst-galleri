@@ -1,0 +1,3 @@
+module.exports=[66188,a=>{"use strict";var b=a.i(7997),c=a.i(95936);a.s(["default",0,function(){return(0,b.jsx)("section",{className:"notFound",children:(0,b.jsxs)("div",{className:"container notFoundInner",children:[(0,b.jsx)("p",{className:"eyebrow",children:"404"}),(0,b.jsx)("h1",{children:"Siden blev ikke fundet."}),(0,b.jsx)("p",{children:"Linket kan være forældet, eller siden kan være blevet flyttet."}),(0,b.jsx)(c.default,{className:"button button--dark",href:"/",children:"Gå til forsiden"})]})})}])},2894,a=>{a.n(a.i(66188))}];
+
+//# sourceMappingURL=app_not-found_tsx_1gi3i27._.js.map

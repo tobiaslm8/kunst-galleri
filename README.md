@@ -1,101 +1,142 @@
-# Atelier Galleri - version 2
+# Atelier Galleri – version 2.2
 
-En professionel, responsiv og statisk Next.js-hjemmeside til at praesentere kunst fra tre kunstnere.
-Version 2 er lavet specifikt til en enkel deployment paa Cloudflare Pages.
+En professionel, responsiv galleri-hjemmeside til tre kunstnere, bygget specifikt til **Cloudflare Pages**.
 
-## Det vigtigste i version 2
+Version 2.2 bruger en lille Node.js-buildfil uden eksterne kodepakker. Det betyder:
 
-- Next.js 16.2.12 og React 19.2.8 er laast til konkrete versioner.
-- TypeScript er laast til 6.0.2, saa npm ikke automatisk henter TypeScript 7.
-- Siden bruger statisk eksport og bygger alle filer til mappen `out`.
-- Ingen database og ingen Node.js-server er noedvendig efter build.
-- Gallerierne scanner automatisk kunstnernes billedmapper ved build.
-- Responsivt masonry-layout og lightbox med tastaturstyring.
-- Grundlaeggende SEO, sitemap, robots, Open Graph og strukturerede data.
-- Ingen eksterne skrifttyper eller tredjeparts scripts.
-- Ingen Tailwind-afhaengighed; designet ligger i almindelig CSS og er nemmere at holde stabilt.
+- ingen Next.js- eller TypeScript-konflikter
+- ingen `npm audit`-problemer
+- et stabilt build til Cloudflare Pages
+- automatisk scanning af kunstnernes billedmapper
+- responsivt masonry-galleri
+- lightbox med næste/forrige, piletaster, Escape og swipe på mobil
+- SEO-metadata, `robots.txt`, `sitemap.xml`, Open Graph og strukturerede data
+- kunstnertekster samlet i én JSON-fil
 
-## Lokal installation
+## Start hjemmesiden lokalt
 
-Brug Node.js 22, og koer derefter:
+Åbn en terminal i projektmappen og kør:
 
 ```powershell
-npm install
 npm run dev
 ```
 
-Aabn:
+Åbn derefter:
 
 ```text
 http://localhost:3000
 ```
 
-## Test produktionsversionen
+Stop serveren med:
+
+```text
+Ctrl + C
+```
+
+Der er ingen eksterne dependencies, så `npm install` er ikke nødvendigt. Det skader dog ikke at køre det.
+
+## Test et produktionsbuild
 
 ```powershell
 npm run build
 ```
 
-Et vellykket build opretter mappen:
+Et vellykket build slutter med teksten:
 
 ```text
-out
+Kunstgalleriet er bygget uden fejl.
 ```
 
-Det er indholdet i `out`, Cloudflare Pages udgiver.
+De færdige hjemmesidefiler bliver lagt i:
 
-## Hvor aendres kunstnerne?
+```text
+out/
+```
+
+## Rediger kunstnere
+
+Alle kunstneroplysninger findes i:
+
+```text
+data/artists.json
+```
+
+Her ændres blandt andet:
+
+- navn
+- slug/mappe-navn
+- kunstnerisk beskrivelse
+- introafsnit
+- SEO-beskrivelse
+- portrættets filnavn
+
+JSON-filen skal beholde korrekt komma- og citationstegnsstruktur.
+
+## Rediger galleriets navn og kontakt
 
 Rediger:
 
 ```text
-lib/artists.ts
+data/site.json
 ```
 
-Her aendres navn, kunstnerisk beskrivelse, intro, SEO-tekst og portraetsti.
+Her ændres blandt andet:
 
-## Hvor laegges billederne?
+- gallerinavn
+- beskrivelse
+- hjemmesideadresse
+- e-mail
+- Instagram-link
+
+## Tilføj eller fjern kunstværker
+
+Billeder lægges i:
 
 ```text
-public/artists/kunstner-1/portrait.jpg
 public/artists/kunstner-1/artworks/
-
-public/artists/kunstner-2/portrait.jpg
 public/artists/kunstner-2/artworks/
-
-public/artists/kunstner-3/portrait.jpg
 public/artists/kunstner-3/artworks/
 ```
 
-Filnavne bruges automatisk som titler. Eksempel:
+Portrætter ligger som eksempel her:
+
+```text
+public/artists/kunstner-1/portrait.jpg
+```
+
+Galleriet finder selv alle understøttede billeder ved næste build.
+
+Et filnavn som:
 
 ```text
 01-stille-landskab.jpg
 ```
 
-vises som:
+bliver vist som titlen:
 
 ```text
 Stille landskab
 ```
 
-## Kontakt og hjemmesidens navn
+Understøttede formater er `.jpg`, `.jpeg`, `.png`, `.webp`, `.avif` og `.gif`.
 
-Rediger:
+## Cloudflare Pages
 
-```text
-lib/site.ts
-```
-
-Her aendres gallerinavn, e-mail og Instagram-link.
-
-## Vigtig SEO-indstilling
-
-Lokalt bruger siden `http://localhost:3000`. Paa Cloudflare boer du tilfoeje denne build-variabel:
+Se den komplette begynderguide i:
 
 ```text
-NEXT_PUBLIC_SITE_URL=https://din-adresse.dk
+CLOUDFLARE.md
 ```
 
-Du kan foerst bruge den endelige `pages.dev`-adresse, naar Cloudflare har oprettet projektet.
-Se `CLOUDFLARE.md`.
+De rigtige build-indstillinger er:
+
+```text
+Framework preset: None
+Build command: npm run build
+Build output directory: out
+Root directory: tom
+```
+
+## Vigtig regel
+
+Kør ikke `npm audit fix --force`. Projektet har ingen eksterne dependencies, så kommandoen er ikke nødvendig.

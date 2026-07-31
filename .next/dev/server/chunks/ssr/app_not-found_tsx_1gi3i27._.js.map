@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/tobia/Desktop/Galleriprojekthjemmeside/kunst-galleri-nextjs%20%281%29/kunst-galleri/app/not-found.tsx"],"sourcesContent":["import Link from \"next/link\";\n\nexport default function NotFoundPage() {\n  return (\n    <section className=\"notFound\">\n      <div className=\"container notFoundInner\">\n        <p className=\"eyebrow\">404</p>\n        <h1>Siden blev ikke fundet.</h1>\n        <p>Linket kan være forældet, eller siden kan være blevet flyttet.</p>\n        <Link className=\"button button--dark\" href=\"/\">\n          Gå til forsiden\n        </Link>\n      </div>\n    </section>\n  );\n}\n"],"names":["NotFoundPage","className","href"],"mappings":";;;;;AAAA;;;AAEe,SAASA;IACtB,qBACE,8OAAC;QAAQC,WAAU;kBACjB,cAAA,8OAAC;YAAIA,WAAU;;8BACb,8OAAC;oBAAEA,WAAU;8BAAU;;;;;;8BACvB,8OAAC;8BAAG;;;;;;8BACJ,8OAAC;8BAAE;;;;;;8BACH,8OAAC,0LAAI;oBAACA,WAAU;oBAAsBC,MAAK;8BAAI;;;;;;;;;;;;;;;;;AAMvD"}}]
+}

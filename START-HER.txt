@@ -1,0 +1,13 @@
+START HER – VERSION 2.2
+
+1. Aabn denne mappe i VS Code.
+2. Aabn Terminal -> New Terminal.
+3. Skriv: npm run dev
+4. Aabn: http://localhost:3000
+5. Stop med Ctrl + C.
+6. Skriv: npm run build
+7. Laes CLOUDFLARE.md, naar buildet er godkendt.
+
+Rediger kunstnere i: data/artists.json
+Rediger gallerinavn og kontakt i: data/site.json
+Laeg kunstvaerker i: public/artists/<slug>/artworks/

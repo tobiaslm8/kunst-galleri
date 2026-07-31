@@ -1,25 +1,14 @@
 {
   "name": "kunst-galleri",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "private": true,
+  "type": "module",
   "engines": {
-    "node": ">=20.9.0 <25"
+    "node": ">=20"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run build"
-  },
-  "dependencies": {
-    "next": "16.2.12",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
-  },
-  "devDependencies": {
-    "@types/node": "22.20.1",
-    "@types/react": "19.2.17",
-    "@types/react-dom": "19.2.3",
-    "typescript": "6.0.2"
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "check": "node scripts/build.mjs --check"
   }
 }
